@@ -2,7 +2,35 @@
   text-align: center;
 }
 
-.App-logo {
+.character{
+  margin:30px;
+  padding:20px;
+
+}
+.input{
+  width: 40%;
+  height:20px;
+  background-color: rgb(206, 60, 60);
+  font-size: 25px;
+  padding: 20px;
+  border-radius: 5%;
+  border:2px red;
+  color: white;
+  font-weight: bold;
+}
+
+.showbox{
+  margin:30px;
+  padding:20px;
+  font-size: 15px;
+  background-color: brown;
+  size: 30px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/*.App-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -35,4 +63,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+}*/
