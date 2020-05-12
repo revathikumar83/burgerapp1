@@ -1,28 +1,59 @@
 import React, { Component } from 'react';
-import Person from './Person/person';
-import UserInput from './Userinput/Userinput';
-import UserOutput from './Useroutput/Useroutput';
-import Validation from './validation/validation';
-import Char from './Char/Char';
+//import Person from '../components/Persons/Person/person';
+import Person from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
+import UserInput from '../components/Userinputs/Userinput/Userinput';
+import UserOutput from '../components/Useroutputs/Useroutput/Useroutput';
+import Validation from '../components/Validations/validation/validation';
+import Char from '../components/Char/Char';
+//import withClass from '../hoc/withClass';
+//import Aux from '../hoc/Aux';
+import AuthContext from '../context/auth-context';
+//import classes from './App.css';
 import './App.css';
+
 
 class App extends Component {
 constructor(props){
 super(props)
-      this.state = {
-        persons: [
-          {id:1, name: 'res', age:27},
-          { id:2, name: 'shiva', age: 34},
-          { id:3, name: 'moon', age: 4},
-          { id:4, name: 'sun', age: 24}
-        ],
-        showPerson: false,
-        username: 'shiva',
-    showName: false,
-    userInput: ''
-      }
+console.log('[App.js constructor]')
+this.state = {
+  persons: [
+    {id:1, name: 'res', age:27},
+    { id:2, name: 'shiva', age: 34},
+    { id:3, name: 'moon', age: 4},
+    { id:4, name: 'sun', age: 24}
+  ],
+  showPerson: false,
+  username: 'shiva',
+showName: false,
+showCockpit: true,
+changeCounter: 0,
+authenticated:false,
+userInput: ''
+}
 
     }
+
+   
+
+static getDerivedStateFromProps(props,state){
+  console.log('[App.js] getderivedstatefromprops', props);
+  return state;
+}
+//componentWillMount(){
+  //console.log('[App.js] componentwillmount');
+//}
+componentDidMount(){
+  console.log('[App.js]componentdidmount');
+}
+shouldComponentUpdate(){
+  console.log('[App.js]shouldcomponentupdate');
+  return true;
+}
+componentDidUpdate(){
+  console.log('[App.js]componentdidupdate');
+}
 
     inputChangedHandler = (event) =>{
       this.setState({userInput:event.target.value})
@@ -42,10 +73,13 @@ const persons = [...this.state.persons];
 
  persons[personIndex] = person;
 
-    this.setState({
-username: event.target.value,
-persons: persons
-  
+    this.setState((prevState, props) => {
+      return{
+//username: event.target.value,
+persons: persons,
+changeCounter: prevState.changeCounter + 1,
+  }
+
 })
   }
 
@@ -67,6 +101,11 @@ showPerson: !doesShow
 showName: !doesShow
     });
 
+  }
+  loginHandler = () =>{
+    this.setState({
+      authenticated:true
+    });
   }
 
   deletehandle =(personIndex) => {
@@ -90,21 +129,18 @@ this.setState({persons:persons});
    
 
 render(){
+  console.log('[App.js]render')
   let persons =null;
 
   if (this.state.showPerson) {
       
-    persons = (
-    
-      <div>
-        {this.state.persons.map((person, index) =>{
-          return <Person name={person.name} age={person.age} key={person.id} click = { () => this.deletehandle(index) }  />
-        })}
-      </div>
-    
-    );
-         
-      }
+    persons =  <Person
+    persons={this.state.persons}
+    clicked={this.deletehandle}
+    changed={this.nameChangedHandler} 
+    isAuthenticated={this.state.authenticated}/>
+
+  }
 
 
       const charList = this.state.userInput.split('').map((ch, index) =>{
@@ -113,12 +149,22 @@ render(){
 
       
   return (
-    <div className="App">
-      <h1>Burger App</h1>
-      
+    //<Aux>
+    <div className='App'>
 
-      <button onClick={this.togglehandle} className='showbox'>showdata</button>
+     <button onClick= {()=>{this.setState({showCockpit:false})}}>remove cockpit</button>
+<AuthContext.Provider 
+   value={{
+  authenticated: this.state.authenticated, 
+  login: this.loginHandler
+   }}>
+     { this.state.showCockpit ? (
+     <Cockpit title={this.props.appTitle}  showperson={this.state.showPerson} persons={this.state.persons} handled={this.togglehandle}/>
+     ) : null }
+
       {persons}
+
+</AuthContext.Provider >
 
       <button onClick={this.toggle} className='showbox'>showbox</button>
 
@@ -126,10 +172,7 @@ render(){
      <div>
     <UserInput 
     changed={this.nameChangedHandler} currentname={this.state.username}/>
-  
-   <UserOutput  username={this.state.username}/>
-   
-        
+    <UserOutput  username={this.state.username}/>
    <UserOutput  username={this.state.username}/>
    <UserOutput  username={this.state.username}/>
    </div>
@@ -148,12 +191,12 @@ render(){
   {charList}
 
 </div>
-
-    
-    
-    </div>
+</div>
+//</Aux>
   );
 }
 }
 
 export default App;
+
+//export default withClass(App, classes.App);

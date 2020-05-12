@@ -4,9 +4,13 @@ const UserInput = (props) => {
     return(
         <div>
             
-            <input type='text' onChange={props.changed} value={props.currentname}/>
+            <input style={style} type='text' onChange={props.changed} value={props.currentname}/>
             
         </div>
     );
+}
+
+const style = {
+    border: '2px solid' 
 }
 export default UserInput;
